@@ -13,6 +13,7 @@ example responses, see the detailed documentation:
 
 👉 **[Peblo Quiz Engine — Backend Documentation (PDF/Docs)](https://docs.google.com/document/d/1d8suMCO7koqm4Hck3Hg2BZAQqh-FCj5l/edit?usp=sharing&ouid=117118106256679832045&rtpof=true&sd=true)**
 
+**[watch demo video](https://drive.google.com/file/d/1moPepEf8ap5jV2z51aDIgcbdae8Wnh03/view?usp=sharing)**
 ---
 
 ## Table of Contents
