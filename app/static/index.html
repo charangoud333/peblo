@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peblo Quiz Engine — Test UI</title>
+  <style>
+    
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Courier New", Courier, monospace;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      padding: 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 0.4rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      font-size: 1rem;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Sections  */
+  
+    .section {
+      border: 1px solid #ccc;
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      background: #fff;
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: bold;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.8rem;
+    }
+
+    /* Form elements  */
+   
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.2rem;
+      color: #444;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid #bbb;
+      background: #fafafa;
+      font-family: inherit;
+      font-size: 0.85rem;
+      margin-bottom: 0.8rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #555;
+      background: #fff;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+
+    button {
+      padding: 0.45rem 1.1rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.03em;
+    }
+
+    button:hover { background: #333; }
+    button:disabled { background: #999; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: #fff;
+      color: #1a1a1a;
+      border: 1px solid #1a1a1a;
+    }
+
+    .btn-secondary:hover { background: #f0f0f0; }
+
+   
+    /* Output / response boxes   */
+    
+    .output {
+      margin-top: 0.9rem;
+      padding: 0.8rem;
+      background: #f0f0eb;
+      border-left: 3px solid #1a1a1a;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 2rem;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .output.success { border-left-color: #2a7a2a; background: #f0faf0; }
+    .output.error   { border-left-color: #a02020; background: #fdf0f0; }
+
+
+    /* Quiz cards  */
+    
+    #quiz-list { margin-top: 1rem; }
+
+    .q-card {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      margin-bottom: 0.8rem;
+      background: #fafafa;
+    }
+
+    .q-card .q-meta {
+      font-size: 0.7rem;
+      color: #888;
+      margin-bottom: 0.4rem;
+    }
+
+    .q-card .q-text {
+      font-size: 0.9rem;
+      font-weight: bold;
+      margin-bottom: 0.6rem;
+    }
+
+    .q-card .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.3rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #1a1a1a;
+    }
+
+    .q-card .options input[type="radio"] {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .q-card .fill-input {
+      margin-bottom: 0;
+    }
+
+    .q-card .submit-btn {
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+      padding: 0.3rem 0.8rem;
+    }
+
+    .q-card .answer-feedback {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    .correct-feedback   { background: #e8f8e8; color: #1a5c1a; border-left: 3px solid #2a7a2a; }
+    .incorrect-feedback { background: #fde8e8; color: #7a1a1a; border-left: 3px solid #a02020; }
+
+    
+    /* Student ID bar */
+    
+    .student-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .student-bar input {
+      width: 160px;
+      margin: 0;
+    }
+
+    .student-bar span { color: #888; font-size: 0.75rem; }
+
+    
+    /* Miscellaneous  */
+
+    .divider {
+      border: none;
+      border-top: 1px dashed #ccc;
+      margin: 1.5rem 0;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #ccc;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .status-dot.green { background: #2a7a2a; }
+  </style>
+</head>
+
+<body>
+
+  <h1>Peblo Quiz Engine</h1>
+  <p class="subtitle">
+    Developer test interface &mdash; not a production UI.
+    <span id="api-status"><span class="status-dot" id="status-dot"></span><span id="status-text">checking API...</span></span>
+  </p>
+
+  
+  <!-- Active student ID   -->
+  
+  <div class="student-bar">
+    <label for="global-student-id" style="margin:0; color:#444;">Student ID:</label>
+    <input type="text" id="global-student-id" value="S001" style="width:140px; margin:0;" />
+    <span>Used for all answer submissions in this session.</span>
+  </div>
+
+  <!-- 1. INGEST   -->
+  
+  <div class="section">
+    <div class="section-label">Step 1 — Ingest PDF</div>
+    <h2>POST /ingest</h2>
+
+    <label for="pdf-file">PDF File</label>
+    <input type="file" id="pdf-file" accept=".pdf" />
+
+    <div class="row">
+      <div>
+        <label for="doc-title">Title</label>
+        <input type="text" id="doc-title" placeholder="e.g. Introduction to Algebra" />
+      </div>
+      <div>
+        <label for="doc-subject">Subject</label>
+        <input type="text" id="doc-subject" placeholder="e.g. Mathematics" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="doc-grade">Grade</label>
+        <input type="text" id="doc-grade" placeholder="e.g. Grade 8" />
+      </div>
+    </div>
+
+    <button onclick="ingestPDF()">Upload &amp; Ingest</button>
+
+    <div class="output" id="ingest-output">Response will appear here.</div>
+  </div>
+
+  <!-- --------------------- -->
+  <!-- 2. GENERATE QUIZ     -->
+  <!-- -------------------- -->
+  <div class="section">
+    <div class="section-label">Step 2 — Generate Quiz Questions (LLM)</div>
+    <h2>POST /generate-quiz</h2>
+
+    <label for="gen-source-id">Source ID (from Step 1)</label>
+    <input type="number" id="gen-source-id" placeholder="e.g. 1" min="1" />
+
+    <button onclick="generateQuiz()">Generate Quiz</button>
+
+    <div class="output" id="generate-output">Response will appear here.</div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ------------------ -->
+  <!-- 3. FETCH QUIZ      -->
+  <!-- ------------------ -->
+  <div class="section">
+    <div class="section-label">Step 3 — Fetch &amp; Answer Questions</div>
+    <h2>GET /quiz</h2>
+
+    <div class="row">
+      <div>
+        <label for="filter-topic">Topic (optional)</label>
+        <input type="text" id="filter-topic" placeholder="e.g. photosynthesis" />
+      </div>
+      <div>
+        <label for="filter-difficulty">Difficulty (optional)</label>
+        <select id="filter-difficulty">
+          <option value="">— any —</option>
+          <option value="easy">easy</option>
+          <option value="medium">medium</option>
+          <option value="hard">hard</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="filter-source-id">Source ID (optional)</label>
+        <input type="number" id="filter-source-id" placeholder="e.g. 1" min="1" />
+      </div>
+      <div>
+        <label for="filter-limit">Limit</label>
+        <input type="number" id="filter-limit" value="10" min="1" max="100" />
+      </div>
+    </div>
+
+    <button onclick="fetchQuiz()">Fetch Questions</button>
+
+    <div id="quiz-list"></div>
+  </div>
+
+  
+  <!-- 4. STUDENT PERFORMANCE  -->
+  
+  <div class="section">
+    <div class="section-label">Step 4 — Student Performance</div>
+    <h2>GET /student/{id}/performance</h2>
+
+    <label for="perf-student-id">Student ID</label>
+    <input type="text" id="perf-student-id" placeholder="e.g. S001" />
+
+    <button onclick="fetchPerformance()">Fetch Performance</button>
+
+    <div class="output" id="performance-output">Response will appear here.</div>
+  </div>
+
+
+  <!-- JS -->
+  <script>
+    const API = "http://localhost:8000";
+
+   
+    async function checkHealth() {
+      try {
+        const res = await fetch(`${API}/health`);
+        const data = await res.json();
+        if (data.status === "ok") {
+          document.getElementById("status-dot").classList.add("green");
+          document.getElementById("status-text").textContent = "API online";
+        }
+      } catch {
+        document.getElementById("status-text").textContent = "API offline";
+      }
+    }
+
+    checkHealth();
+
+   
+    function setOutput(id, data, isError = false) {
+      const el = document.getElementById(id);
+      el.textContent = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      el.className = "output " + (isError ? "error" : "success");
+    }
+
+    function getStudentId() {
+      return document.getElementById("global-student-id").value.trim() || "S001";
+    }
+
+   
+    // 1. Ingest   //
+   
+    async function ingestPDF() {
+      const file    = document.getElementById("pdf-file").files[0];
+      const title   = document.getElementById("doc-title").value.trim();
+      const subject = document.getElementById("doc-subject").value.trim();
+      const grade   = document.getElementById("doc-grade").value.trim();
+
+      if (!file)  return setOutput("ingest-output", "Please select a PDF file.", true);
+      if (!title) return setOutput("ingest-output", "Please enter a document title.", true);
+
+      const form = new FormData();
+      form.append("file",    file);
+      form.append("title",   title);
+      form.append("subject", subject || "General");
+      form.append("grade",   grade   || "Unknown");
+
+      setOutput("ingest-output", "Uploading and processing...");
+
+      try {
+        const res  = await fetch(`${API}/ingest`, { method: "POST", body: form });
+        const data = await res.json();
+        setOutput("ingest-output", data, !res.ok);
+
+        if (res.ok && data.source_id) {
+          document.getElementById("gen-source-id").value    = data.source_id;
+          document.getElementById("filter-source-id").value = data.source_id;
+        }
+      } catch (e) {
+        setOutput("ingest-output", `Network error: ${e.message}`, true);
+      }
+    }
+
+    
+    // 2. Generate Quiz   //
+    
+    async function generateQuiz() {
+      const sourceId = document.getElementById("gen-source-id").value;
+      if (!sourceId) return setOutput("generate-output", "Enter a source_id first.", true);
+
+      setOutput("generate-output", "Calling LLM to generate questions...");
+
+      try {
+        const res  = await fetch(`${API}/generate-quiz?source_id=${sourceId}`, { method: "POST" });
+        const data = await res.json();
+        setOutput("generate-output", data, !res.ok);
+      } catch (e) {
+        setOutput("generate-output", `Network error: ${e.message}`, true);
+      }
+    }
+
+   
+    // 3. Fetch Quiz  //
+   
+    async function fetchQuiz() {
+      const topic      = document.getElementById("filter-topic").value.trim();
+      const difficulty = document.getElementById("filter-difficulty").value;
+      const sourceId   = document.getElementById("filter-source-id").value;
+      const limit      = document.getElementById("filter-limit").value || 10;
+
+      const params = new URLSearchParams();
+      if (topic)      params.append("topic",      topic);
+      if (difficulty) params.append("difficulty", difficulty);
+      if (sourceId)   params.append("source_id",  sourceId);
+      params.append("limit", limit);
+
+      const listEl = document.getElementById("quiz-list");
+      listEl.innerHTML = "<p style='font-size:0.8rem; color:#888;'>Loading questions...</p>";
+
+      try {
+        const res  = await fetch(`${API}/quiz?${params}`);
+        const data = await res.json();
+
+        if (!res.ok) {
+          listEl.innerHTML = `<div class="output error">${JSON.stringify(data, null, 2)}</div>`;
+          return;
+        }
+
+        if (!data.questions || data.questions.length === 0) {
+          listEl.innerHTML = "<p style='font-size:0.8rem; color:#888; margin-top:0.8rem;'>No questions found for these filters.</p>";
+          return;
+        }
+
+        listEl.innerHTML = `<p style="font-size:0.78rem; color:#666; margin: 0.6rem 0;">${data.total} question(s) returned.</p>`;
+        data.questions.forEach(q => listEl.appendChild(buildQuestionCard(q)));
+
+      } catch (e) {
+        listEl.innerHTML = `<div class="output error">Network error: ${e.message}</div>`;
+      }
+    }
+
+   
+    // Build a question card DOM element  //
+   
+    function buildQuestionCard(q) {
+      const card = document.createElement("div");
+      card.className = "q-card";
+      card.id = `q-card-${q.id}`;
+
+      const meta = `#${q.id} &nbsp;|&nbsp; ${q.question_type} &nbsp;|&nbsp; ${q.difficulty}`;
+
+      let optionsHtml = "";
+
+      if (q.question_type === "FillBlank") {
+        optionsHtml = `
+          <input
+            type="text"
+            class="fill-input"
+            id="answer-${q.id}"
+            placeholder="Type your answer..."
+          />`;
+      } else {
+        const opts = q.options || ["True", "False"];
+        optionsHtml = `<div class="options">` +
+          opts.map(opt => `
+            <label>
+              <input type="radio" name="q-${q.id}" value="${opt}" />
+              ${opt}
+            </label>`
+          ).join("") +
+        `</div>`;
+      }
+
+      card.innerHTML = `
+        <div class="q-meta">${meta}</div>
+        <div class="q-text">${q.question_text}</div>
+        ${optionsHtml}
+        <button class="submit-btn" onclick="submitAnswer(${q.id}, '${q.question_type}')">
+          Submit Answer
+        </button>
+        <div id="feedback-${q.id}"></div>
+      `;
+
+      return card;
+    }
+
+    // 4. Submit Answer  //
+   
+    async function submitAnswer(questionId, questionType) {
+      let selected = "";
+
+      if (questionType === "FillBlank") {
+        selected = document.getElementById(`answer-${questionId}`).value.trim();
+      } else {
+        const checked = document.querySelector(`input[name="q-${questionId}"]:checked`);
+        if (checked) selected = checked.value;
+      }
+
+      const feedbackEl = document.getElementById(`feedback-${questionId}`);
+
+      if (!selected) {
+        feedbackEl.className = "answer-feedback incorrect-feedback";
+        feedbackEl.textContent = "Please select or enter an answer first.";
+        return;
+      }
+
+      const payload = {
+        student_id:      getStudentId(),
+        question_id:     questionId,
+        selected_answer: selected,
+      };
+
+      try {
+        const res  = await fetch(`${API}/submit-answer`, {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          feedbackEl.className = "answer-feedback incorrect-feedback";
+          feedbackEl.textContent = JSON.stringify(data);
+          return;
+        }
+
+        const icon = data.is_correct ? "✓" : "✗";
+        feedbackEl.className = `answer-feedback ${data.is_correct ? "correct-feedback" : "incorrect-feedback"}`;
+        feedbackEl.innerHTML = `
+          ${icon} ${data.message}<br/>
+          <small>Correct answer: <strong>${data.correct_answer}</strong> &nbsp;|&nbsp; Next difficulty: <strong>${data.next_difficulty}</strong></small>
+        `;
+
+      } catch (e) {
+        feedbackEl.className = "answer-feedback incorrect-feedback";
+        feedbackEl.textContent = `Network error: ${e.message}`;
+      }
+    }
+
+    // 5. Student Performance  //
+   
+    async function fetchPerformance() {
+      const studentId = document.getElementById("perf-student-id").value.trim();
+      if (!studentId) return setOutput("performance-output", "Enter a student ID.", true);
+
+      try {
+        const res  = await fetch(`${API}/student/${studentId}/performance`);
+        const data = await res.json();
+        setOutput("performance-output", data, !res.ok);
+      } catch (e) {
+        setOutput("performance-output", `Network error: ${e.message}`, true);
+      }
+    }
+  </script>
+
+</body>
+</html>
